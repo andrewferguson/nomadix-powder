@@ -13,6 +13,9 @@ pc = portal.Context()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
+# Get the githib username / token for pulling repos
+pc.defineParameter("token", "GitHub Username:Token", portal.ParameterType.STRING, "")
+
 # Variable number of nodes.
 pc.defineParameter("workerCount", "Number of k0s Worker Nodes", portal.ParameterType.INTEGER, 1,
                    longDescription="Number of worker nodes in the k0s cluster - 0 means only controller node")
@@ -49,8 +52,8 @@ pc.defineParameter("tempFileSystemSize", "Temporary Filesystem Size",
                    "The images provided by the system have small root partitions, so use this option " +
                    "if you expect you will need more space to build your software packages or store " +
                    "temporary files.")
-                   
-# Instead of a size, ask for all available space. 
+
+# Instead of a size, ask for all available space.
 pc.defineParameter("tempFileSystemMax",  "Temp Filesystem Max Space",
                     portal.ParameterType.BOOLEAN, False,
                     advanced=True,
@@ -114,7 +117,7 @@ node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-ran.s
 # Process the Core + Nomadix Controller node
 node = create_node("ran")
 node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-core.sh"))
-node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-controller.sh"))
+node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-controller.sh " + params.token))
 
 # Process the k0s controller node
 node = create_node("ran")
