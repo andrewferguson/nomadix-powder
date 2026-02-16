@@ -115,12 +115,12 @@ node = create_node("ran")
 node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-ran.sh"))
 
 # Process the Core + Nomadix Controller node
-node = create_node("ran")
+node = create_node("core")
 node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-core.sh"))
 node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-controller.sh " + params.token))
 
 # Process the k0s controller node
-node = create_node("ran")
+node = create_node("k0s-controller")
 node.addService(pg.Execute(shell="bash", command="/local/repository/install-k0s.sh " + str(params.workerCount)))
 
 # Process k0s worker nodes
