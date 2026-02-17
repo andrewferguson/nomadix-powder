@@ -1,4 +1,12 @@
 #!/bin/bash
+set -e
+
+# Log all output
+exec > >(tee "/local/repository/deploy-core.log") 2>&1
+
+# Move to homedir
+cd ~
+pwd
 
 # MongoDB setup
 curl -fsSL https://pgp.mongodb.com/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor

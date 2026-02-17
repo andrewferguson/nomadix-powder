@@ -1,4 +1,12 @@
 #!/bin/sh
+set -e
+
+# Log all output
+exec > >(tee "/local/repository/install-k0s.log") 2>&1
+
+# Move to homedir
+cd ~
+pwd
 
 # Create the user SSH directory, just in case.
 mkdir $HOME/.ssh && chmod 700 $HOME/.ssh

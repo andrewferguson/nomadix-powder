@@ -1,4 +1,12 @@
 #!/bin/bash
+set -e
+
+# Log all output
+exec > >(tee "/local/repository/deploy-ran.log") 2>&1
+
+# Move to homedir
+cd ~
+pwd
 
 AMF_IP_ADDR="10.10.1.2"
 

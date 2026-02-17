@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Get the github token
 if [ "$#" -ne "1" ]; then
@@ -6,6 +7,13 @@ if [ "$#" -ne "1" ]; then
     exit 1
 fi
 GHT=$1
+
+# Log all output
+exec > >(tee "/local/repository/deploy-controller.log") 2>&1
+
+# Move to homedir
+cd ~
+pwd
 
 # Compile Open5GS so that Nomadix can link to it
 
