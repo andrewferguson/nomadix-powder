@@ -8,9 +8,6 @@ if [ "$#" -ne "1" ]; then
 fi
 GHT=$1
 
-# Log all output
-exec > >(tee "/local/repository/deploy-controller.log") 2>&1
-
 # Move to homedir
 cd ~
 pwd

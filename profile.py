@@ -112,8 +112,7 @@ def create_node(name):
 
 # Process the RAN node
 node = create_node("ran")
-node.addService(pg.Execute(shell="bash", command="touch /local/repository/touchfile"))
-#node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-ran.sh"))
+node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-ran.sh"))
 
 # Process the Core + Nomadix Controller node
 node = create_node("core")

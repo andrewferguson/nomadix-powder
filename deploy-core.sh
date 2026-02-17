@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# Log all output
-exec > >(tee "/local/repository/deploy-core.log") 2>&1
-
 # Move to homedir
 cd ~
 pwd

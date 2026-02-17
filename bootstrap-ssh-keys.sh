@@ -1,9 +1,6 @@
 #!/bin/sh
 set -e
 
-# Log all output
-exec > >(tee "/local/repository/install-k0s.log") 2>&1
-
 # Move to homedir
 cd ~
 pwd
