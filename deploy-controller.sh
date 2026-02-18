@@ -37,6 +37,10 @@ sudo apt install -y libcyaml-dev libcyaml1
 cd ~
 git clone https://$GHT@github.com/andrewferguson/NOMADIX.git
 cd NOMADIX/controller
+
+# Before building, patch an issue (caused by partial inter-forwarder forwarding implementation)
+git checkout 95c0dc8c8847bbb39fc1769433ca552dc1c51c56
+sed -i 's/\/home\/\${USER}\/open5gs/\${HOME}\/open5gs/g' Makefile
 make
 
 # Configure the controller
