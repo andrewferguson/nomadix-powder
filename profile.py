@@ -122,6 +122,7 @@ node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-contr
 # Process the k0s controller node
 node = create_node("k0s-controller")
 node.addService(pg.Execute(shell="bash", command="/local/repository/install-k0s.sh " + str(params.workerCount)))
+node.addService(pg.Execute(shell="bash", command="/local/repository/deploy-forwarder.sh"))
 
 # Process k0s worker nodes
 for i in range(params.workerCount):

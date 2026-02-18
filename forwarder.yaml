@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nomadix
+data:
+  nomadix.yaml: |
+    forwarder:
+      nomadix_bind_address: __forwarder_pod_ip__ # auto-filled by k8s
+      gtpu_bind_address: __forwarder_pod_ip__ # auto-filled by k8s
+      controller_address: 10.10.1.2
+      controller_port: 1234
+      announce_address: 10.10.1.3
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nomadix-forwarder
+  labels:
+    app.kubernetes.io/name: nomadix-forwarder
+spec:
+  containers:
+  - name: main
+    image: docker.io/andrewferguson/nomadix:95c0dc8c
+    command: ["bash", "-c"]
+    args:
+    - bash /scripts/net-setup.sh &&
+      sed "s/__forwarder_pod_ip__/$THIS_POD_IP/g" /config/nomadix.yaml > /nomadix.yaml &&
+      /forwarder/forwarder /nomadix.yaml
+    ports:
+      - name: gtpu
+        containerPort: 2152
+        protocol: UDP
+    env:
+    - name: THIS_POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: dev-tun
+      mountPath: /dev/net/tun
+    - mountPath: /config
+      name: nomadix
+    - mountPath: /scripts
+      name: nomadix-forwarder-net-setup-script
+  volumes:
+  - name: dev-tun
+    hostPath:
+      path: /dev/net/tun
+      type: CharDevice
+  - name: nomadix
+    configMap:
+      name: nomadix
+      items:
+      - key: nomadix.yaml
+        path: nomadix.yaml
+      defaultMode: 0777
+  - name: nomadix-forwarder-net-setup-script
+    configMap:
+      name: nomadix-forwarder-net-setup-script
+      items:
+      - key: net-setup.sh
+        path: net-setup.sh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nomadix-forwarder-gtpu
+spec:
+  selector:
+    app.kubernetes.io/name: nomadix-forwarder
+  ports:
+  - port: 2152
+    targetPort: 2152
+    nodePort: 2152
+    protocol: UDP
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nomadix-forwarder-net-setup-script
+data:
+  net-setup.sh: |
+    #!/bin/bash
+    sysctl -w net.ipv4.ip_forward=1
+    if ! ip tuntap | grep -q ogstun ; then
+      ip tuntap add name ogstun mode tun
+    fi
+    if ! ip addr show dev ogstun | grep -q 10.45.0.1/16 ; then
+      ip addr add 10.45.0.1/16 dev ogstun
+    fi
+    if ! ip link show ogstun | grep -q "state UP" ; then
+      ip link set ogstun up
+    fi
+    if ! iptables -t nat -C POSTROUTING -s 10.45.0.0/16 ! -o ogstun -j MASQUERADE &> /dev/null ; then
+      iptables -t nat -A POSTROUTING -s 10.45.0.0/16 ! -o ogstun -j MASQUERADE
+    fi
