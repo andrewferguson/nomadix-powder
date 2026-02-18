@@ -43,7 +43,7 @@ make
 CONTROLLER_IP_ADDR=$(ifconfig | grep inet | grep "10.10" | awk -F ' ' '{ print $2 }')
 cat > controller.yaml <<EOL
 controller:
-  pfcp_bind_address: $CONTROLLER_IP_ADDR
+  pfcp_bind_address: 127.0.0.7 # default Open5GS UPF PFCP bind address
   nomadix_bind_address: $CONTROLLER_IP_ADDR
   nomadix_bind_port: 1234
 EOL
