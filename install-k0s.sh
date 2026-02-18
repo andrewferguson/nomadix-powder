@@ -103,3 +103,6 @@ rm ~/.ssh/known_hosts
 ./k0sctl-linux-amd64 apply --config k0sctl.yaml
 
 
+# Setup aliases for accessing the cluster
+echo 'alias kubectl="sudo k0s kubectl"' >> ~/.bashrc
+echo 'alias k="kubectl"' >> ~/.bashrc
