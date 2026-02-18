@@ -72,6 +72,12 @@ cat >> k0sctl.yaml<< EOF
       taint: k0sctl.k0sproject.io/evict=true
       effect: NoExecute
       controllerWorkers: false
+  k0s:
+    config:
+      spec:
+        api:
+          extraArgs:
+            service-node-port-range: "1000-39000"
 EOF
 
 # Wait for all nodes to be ready (ssh works)
