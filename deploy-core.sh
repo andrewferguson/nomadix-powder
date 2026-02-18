@@ -24,6 +24,9 @@ sudo sed -i -z "s/ngap:\n    server:\n      - address: 127.0.0.5/ngap:\n    serv
 sudo sed -i -z "s/gtpu:\n    server:\n      - address: 127.0.0.7/gtpu:\n    server:\n      - address: $CORE_IP_ADDR/g" /etc/open5gs/upf.yaml
 
 sudo systemctl restart open5gs-amfd
-sudo systemctl restart open5gs-upfd
+
+# Disable the UPF, we don't want it
+sudo systemctl stop open5gs-upfd
+sudo systemctl disable open5gs-upfd
 
 echo "All done"
