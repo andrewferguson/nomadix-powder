@@ -90,6 +90,9 @@ if [ "$NUM_WORKERS" -ge "1" ]; then
     done
 fi
 
+# Remove known hosts as it messes with k0s
+rm ~/.ssh/known_hosts
+
 # Install the cluster
 ./k0sctl-linux-amd64 apply --config k0sctl.yaml
 
