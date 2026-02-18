@@ -6,7 +6,7 @@ cd ~
 pwd
 
 # Create the user SSH directory, just in case.
-mkdir $HOME/.ssh && chmod 700 $HOME/.ssh
+mkdir $HOME/.ssh && chmod 700 $HOME/.ssh || echo "SSH directory already exists"
 
 # Retrieve the server-generated RSA private key.
 geni-get key > $HOME/.ssh/id_rsa
